@@ -1,0 +1,68 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    background: #000;
+    color: #fff;
+    font-family: Arial, sans-serif;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    cursor: pointer; /* Changes mouse to pointer to signal that it's clickable */
+    transition: background-color 0.4s ease;
+}
+
+/* Subtle dim indicator when the player is paused */
+body.paused-state {
+    background-color: #111;
+}
+
+.bg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(270deg, #ff4e50, #1e90ff, #8e44ad);
+    background-size: 600% 600%;
+    animation: bgMove 14s ease-in-out infinite;
+    z-index: -1;
+    transition: opacity 0.4s ease;
+}
+
+body.paused-state .bg {
+    opacity: 0.6; /* Dims the background slightly while paused */
+}
+
+@keyframes bgMove {
+    0%, 100% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+}
+
+.lyrics {
+    text-align: center;
+    font-size: 32px;
+    width: 100%;
+    padding: 0 20px;
+    letter-spacing: 0.5px;
+    user-select: none; /* Prevents text from being accidentally highlighted on click */
+}
+
+.line {
+    position: absolute;
+    left: 50%;
+    top: 45%;
+    transform: translate(-50%, -50%);
+    opacity: 0;
+    transition: opacity 0.8s ease-in-out;
+    width: 100%;
+}
+
+.line.active {
+    opacity: 1;
+}
