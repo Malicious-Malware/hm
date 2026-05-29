@@ -1,0 +1,95 @@
+5<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>w2e - love. (MV Version)</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div class="bg"></div>
+
+    <div class="lyrics">
+        <div class="line">사람 사이 사람</div>
+        <div class="line">바람 사이 바람</div>
+        <div class="line">각자의 염원이 바래고</div>
+        <div class="line">덧칠되어...</div>
+        <div class="line">발이 닿을 만큼</div>
+        <div class="line">굳어지면...</div>
+        <div class="line">비로소 내 세상이</div>
+        <div class="line">되어줘.</div>
+    </div>
+
+    <script>
+        const lines = document.querySelectorAll('.line');
+        const bg = document.querySelector('.bg');
+        
+        const timings = [4200, 4300, 3200, 6800, 5300, 4300, 4900, 9500];
+        
+        let currentIndex = -1; // Starts at -1 to handle the initial intro delay smoothly
+        let isPaused = false;
+        let timerId = null;
+        let startTime = null;
+        let remainingTime = 18500; // The initial 18.5s intro delay
+
+        // A robust custom timer class to handle pausing and resuming mid-delay
+        function CustomTimer(callback, delay) {
+            remainingTime = delay;
+            
+            this.pause = () => {
+                window.clearTimeout(timerId);
+                remainingTime -= Date.now() - startTime;
+            };
+
+            this.resume = () => {
+                startTime = Date.now();
+                window.clearTimeout(timerId);
+                timerId = window.setTimeout(callback, remainingTime);
+            };
+
+            this.resume();
+        }
+
+        function playNext() {
+            // Hide previous lines
+            lines.forEach(line => line.classList.remove('active'));
+            currentIndex++;
+
+            if (currentIndex < lines.length) {
+                lines[currentIndex].classList.add('active');
+                
+                // Track the current line delay
+                currentTimer = new CustomTimer(() => {
+                    playNext();
+                }, timings[currentIndex]);
+            } else {
+                // Loop behavior
+                currentIndex = -1;
+                currentTimer = new CustomTimer(() => {
+                    playNext();
+                }, 2000); // 2 second pause before looping back to intro
+            }
+        }
+
+        // Initialize the first timer window for the 18.5s intro
+        let currentTimer = new CustomTimer(() => {
+            playNext();
+        }, remainingTime);
+
+        // Click anywhere on the screen to play/pause toggle
+        window.addEventListener('click', () => {
+            if (!isPaused) {
+                isPaused = true;
+                currentTimer.pause();
+                bg.style.animationPlayState = 'paused'; // Freezes the gradient movement
+                document.body.classList.add('paused-state');
+            } else {
+                isPaused = false;
+                currentTimer.resume();
+                bg.style.animationPlayState = 'running'; // Resumes the gradient movement
+                document.body.classList.remove('paused-state');
+            }
+        });
+    </script>
+</body>
+</html>
